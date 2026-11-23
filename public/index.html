@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aqua Hub</title>
+<style>
+:root{--bg:#fff;--ink:#0b2a3d;--mute:#6b8394;--line:#e3f1f8;--w1:#7fd6ff;--w2:#1e9bf0;--w3:#0a6fd1;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;padding-bottom:92px;overflow-x:hidden}
+.drops{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.drops i{position:absolute;bottom:-30px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,var(--w1));opacity:.5;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-110vh);opacity:0}}
+main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:18px 16px}
+h1{font-size:26px;margin:6px 0 2px;font-weight:700}
+.sub{color:var(--mute);margin:0 0 14px;font-size:14px}
+.search{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:13px 16px;font:inherit;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.search:focus{border-color:var(--w2);box-shadow:0 0 0 4px #1e9bf022}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;color:var(--ink)}
+.chip.on{background:linear-gradient(135deg,var(--w1),var(--w2));color:#fff;border-color:transparent}
+.sec{margin:22px 0 10px;font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(4,1fr)}}
+.tool{position:relative;overflow:hidden;border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:14px 6px 12px;text-align:center;font:inherit;color:var(--ink);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.tool:active{transform:scale(.95)}
+.tool:hover{box-shadow:0 10px 24px #1e9bf022}
+.ic{width:46px;height:46px;margin:0 auto 8px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 32% 25%,#fff 0 12%,transparent 13%),linear-gradient(160deg,var(--w1),var(--w2) 60%,var(--w3));display:grid;place-items:center;font-size:21px;box-shadow:inset 0 -4px 8px #0a6fd155,0 4px 10px #1e9bf040;animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+.tool b{display:block;font-size:12.5px;font-weight:600;line-height:1.25}
+.tool.ok::after{content:"";position:absolute;top:9px;right:9px;width:9px;height:9px;border-radius:50%;background:#19c37d;box-shadow:0 0 0 3px #19c37d33}
+.rip{position:absolute;border-radius:50%;background:#1e9bf033;transform:scale(0);animation:r .6s ease-out forwards;pointer-events:none}
+@keyframes r{to{transform:scale(4);opacity:0}}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;gap:4px;background:#ffffffee;backdrop-filter:blur(12px);border:1.5px solid var(--line);border-radius:26px;padding:6px;box-shadow:0 12px 30px #1e9bf02e}
+.nav button{border:0;background:none;font:inherit;font-size:12px;color:var(--mute);padding:8px 18px;border-radius:20px;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.25s}
+.nav button span{font-size:18px}
+.nav button.on{background:linear-gradient(135deg,var(--w1),var(--w2));color:#fff}
+.btn{position:relative;overflow:hidden;border:0;border-radius:16px;padding:13px 20px;font:inherit;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--w1),var(--w3));box-shadow:0 8px 20px #1e9bf055;cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:#fff;color:var(--w3);border:1.5px solid var(--line);box-shadow:none}
+.view{display:none;animation:in .35s ease}.view.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.card{border:1.5px solid var(--line);border-radius:20px;padding:14px;margin:10px 0;display:flex;align-items:center;gap:12px;background:#fff}
+.card .ic{margin:0;flex:none;width:42px;height:42px;font-size:18px}
+.card .t{flex:1;min-width:0}.card .t b{display:block}.card .t small{color:var(--mute);word-break:break-all}
+.x{border:0;background:#f1f8fc;border-radius:50%;width:32px;height:32px;color:var(--mute)}
+.sheet-bg{position:fixed;inset:0;background:#0b2a3d44;z-index:10;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.on{display:flex}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:28px 28px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:up .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes up{from{transform:translateY(100%)}}
+.sheet h3{margin:0 0 4px}.sheet p{margin:0 0 14px;color:var(--mute);font-size:13.5px}
+.in{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;margin-bottom:10px;outline:none}
+.in:focus{border-color:var(--w2)}
+.row{display:flex;gap:10px}.row .btn{flex:1}
+.empty{text-align:center;color:var(--mute);padding:34px 10px;font-size:14px}
+.toast{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-80px);background:var(--ink);color:#fff;border-radius:14px;padding:10px 18px;z-index:20;transition:transform .35s;font-size:14px}
+.toast.on{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="drops" id="drops"></div>
+<main>
+<section class="view on" id="v-home">
+<h1>💧 Aqua Hub</h1>
+<p class="sub">সব অ্যাপের কাজ এক জায়গায় — অফিসিয়াল API Key দিয়ে কানেক্ট করুন</p>
+<input class="search" id="q" placeholder="টুল খুঁজুন…">
+<div class="chips" id="chips"></div>
+<div id="secs"></div>
+</section>
+<section class="view" id="v-admin">
+<h1>Admin Panels</h1>
+<p class="sub">একাধিক ব্যাকএন্ড অ্যাডমিন প্যানেল যুক্ত করে সাইট/অ্যাপ কন্ট্রোল করুন</p>
+<button class="btn" id="addAdmin" style="width:100%">＋ নতুন অ্যাডমিন প্যানেল</button>
+<div id="admins"></div>
+</section>
+<section class="view" id="v-conn">
+<h1>Connected</h1>
+<p class="sub">যে টুলগুলো API Key দিয়ে কানেক্ট করা আছে</p>
+<div id="conns"></div>
+</section>
+</main>
+<nav class="nav" id="nav">
+<button class="on" data-v="home"><span>🏠</span>Home</button>
+<button data-v="admin"><span>🛡️</span>Admin</button>
+<button data-v="conn"><span>🔗</span>Connected</button>
+</nav>
+<div class="sheet-bg" id="bg"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const D=[
+["Source Code","📦",[["GitHub","🐙"],["GitLab","🦊"],["Bitbucket","🪣"],["Azure Repos","🔷"],["Gitea","🍵"]]],
+["Deploy & Live","🚀",[["Vercel","▲"],["Netlify","🌐"],["Cloudflare Pages","☁️"],["Firebase Hosting","🔥"],["Render","🎯"],["Railway","🚂"],["Fly.io","🪁"]]],
+["Database","🗄️",[["Supabase","⚡"],["MongoDB Atlas","🍃"],["PlanetScale","🪐"],["Firebase DB","🔥"],["Neon","💠"],["Redis Cloud","🔴"],["Turso","🐢"]]],
+["Backend & API","🔌",[["Firebase","🔥"],["Appwrite","🅰️"],["AWS Lambda","λ"],["Hasura","🟣"],["Postman","📮"],["Zapier","⚙️"],["n8n","🔁"]]],
+["Server & Cloud","🖥️",[["AWS","🟠"],["Google Cloud","🔵"],["Azure","🟦"],["DigitalOcean","🌊"],["Hetzner","🧱"],["Linode","🟢"],["Server SSH","⌨️"]]],
+["Payments","💳",[["Stripe","💸"],["PayPal","🅿️"],["bKash","🩷"],["Nagad","🟧"],["SSLCommerz","🔐"],["Razorpay","⚡"],["Paddle","🏓"]]],
+["Meta & Facebook","♾️",[["Meta Ads","📣"],["Business Suite","💼"],["Facebook Pages","📘"],["Instagram API","📷"],["WhatsApp Cloud","💬"],["Messenger","🗨️"],["Pixel & CAPI","🎯"],["Threads","🧵"]]],
+["Domain & DNS","🌍",[["Cloudflare","🛡️"],["Namecheap","🏷️"],["GoDaddy","🐎"],["Google Domains","🔎"]]],
+["Auth & Security","🔑",[["Auth0","🔒"],["Clerk","🗝️"],["Firebase Auth","🪪"],["reCAPTCHA","🤖"]]],
+["Storage & Media","🗂️",[["AWS S3","🪣"],["Cloudinary","🖼️"],["Backblaze B2","💾"],["Uploadthing","⬆️"]]],
+["Messaging","✉️",[["Twilio","📞"],["SendGrid","📧"],["Resend","📨"],["OneSignal","🔔"],["Telegram Bot","✈️"]]],
+["AI Tools","🧠",[["Claude API","✨"],["OpenAI","🌀"],["Gemini","♊"],["Hugging Face","🤗"]]],
+["DevOps & CI/CD","🛠️",[["GitHub Actions","▶️"],["Docker Hub","🐳"],["Sentry","🐞"],["Datadog","🐶"],["Grafana","📊"]]],
+["Analytics & SEO","📈",[["Google Analytics","📉"],["Search Console","🔍"],["Google Ads","🟡"],["TikTok Ads","🎵"],["Mixpanel","🧪"]]]
+];
+const $=s=>document.querySelector(s);
+let S={conn:{},admins:[]};
+try{const r=localStorage.getItem("aqua");if(r)S=JSON.parse(r)}catch(e){}
+const save=()=>{try{localStorage.setItem("aqua",JSON.stringify(S))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
+function ripple(e,el){const r=el.getBoundingClientRect(),s=Math.max(r.width,r.height)/3,x=document.createElement("span");x.className="rip";x.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;el.appendChild(x);setTimeout(()=>x.remove(),600)}
+document.addEventListener("pointerdown",e=>{const b=e.target.closest(".tool,.btn");if(b)ripple(e,b)});
+for(let i=0;i<14;i++){const d=document.createElement("i");d.style.cssText=`left:${Math.random()*100}%;width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;animation-duration:${9+Math.random()*10}s;animation-delay:${-Math.random()*14}s`;$("#drops").appendChild(d)}
+let cat="All";
+function chips(){$("#chips").innerHTML=["All",...D.map(d=>d[0])].map(c=>`<button class="chip ${c==cat?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}
+function home(){const q=$("#q").value.trim().toLowerCase();let h="";
+D.forEach(([n,e,ts])=>{if(cat!="All"&&cat!=n)return;const f=ts.filter(t=>!q||t[0].toLowerCase().includes(q)||n.toLowerCase().includes(q));if(!f.length)return;
+h+=`<div class="sec"><span>${e}</span>${esc(n)}</div><div class="grid">${f.map(t=>`<button class="tool ${S.conn[t[0]]?"ok":""}" data-t="${esc(t[0])}" data-e="${esc(t[1])}"><div class="ic">${t[1]}</div><b>${esc(t[0])}</b></button>`).join("")}</div>`});
+$("#secs").innerHTML=h||'<div class="empty">কিছু পাওয়া যায়নি</div>'}
+function open(h){$("#sheet").innerHTML=h;$("#bg").classList.add("on")}
+function close(){$("#bg").classList.remove("on")}
+function toolSheet(n,e){const c=S.conn[n];
+open(`<div class="ic" style="margin:0 0 10px">${e}</div><h3>${esc(n)}</h3><p>${c?"কানেক্টেড ✔ — Key বদলাতে নতুন Key দিন":"অফিসিয়াল ডেভেলপার API Key দিয়ে কানেক্ট করুন"}</p>
+<input class="in" id="k" type="password" autocomplete="off" placeholder="API Key / Token">
+<input class="in" id="u" placeholder="Base URL / Project ID (ঐচ্ছিক)" value="${c?esc(c.url||""):""}">
+<div class="row">${c?'<button class="btn ghost" id="dc">ডিসকানেক্ট</button>':'<button class="btn ghost" id="cl">বাতিল</button>'}<button class="btn" id="sv">কানেক্ট করুন</button></div>`);
+$("#cl")&&($("#cl").onclick=close);
+$("#dc")&&($("#dc").onclick=()=>{delete S.conn[n];save();close();render();toast("ডিসকানেক্ট হয়েছে")});
+$("#sv").onclick=()=>{const k=$("#k").value.trim();if(!k)return toast("API Key দিন");S.conn[n]={e,url:$("#u").value.trim(),mask:"••••"+k.slice(-4),k};save();close();render();toast(n+" কানেক্টেড")}}
+function adminSheet(){open(`<h3>অ্যাডমিন প্যানেল যুক্ত করুন</h3><p>আপনার সাইট/অ্যাপের ব্যাকএন্ড অ্যাডমিন API</p>
+<input class="in" id="an" placeholder="নাম (যেমন: My Shop)"><input class="in" id="au" placeholder="https://api.example.com/admin"><input class="in" id="ak" type="password" placeholder="Admin API Key">
+<div class="row"><button class="btn ghost" id="cl">বাতিল</button><button class="btn" id="as">যুক্ত করুন</button></div>`);
+$("#cl").onclick=close;
+$("#as").onclick=()=>{const n=$("#an").value.trim(),u=$("#au").value.trim(),k=$("#ak").value.trim();if(!n||!/^https?:\/\//.test(u)||!k)return toast("নাম, সঠিক URL ও Key দিন");S.admins.push({n,u,mask:"••••"+k.slice(-4),k});save();close();render();toast("প্যানেল যুক্ত হয়েছে")}}
+function render(){home();
+$("#admins").innerHTML=S.admins.length?S.admins.map((a,i)=>`<div class="card"><div class="ic">🛡️</div><div class="t"><b>${esc(a.n)}</b><small>${esc(a.u)} · ${a.mask}</small></div><button class="x" data-d="${i}">✕</button></div>`).join(""):'<div class="empty">কোনো অ্যাডমিন প্যানেল নেই।<br>উপরের বাটনে ট্যাপ করে যুক্ত করুন।</div>';
+const c=Object.entries(S.conn);
+$("#conns").innerHTML=c.length?c.map(([n,v])=>`<div class="card"><div class="ic">${v.e}</div><div class="t"><b>${esc(n)}</b><small>${v.mask}${v.url?" · "+esc(v.url):""}</small></div><span style="color:#19c37d">●</span></div>`).join(""):'<div class="empty">এখনো কিছু কানেক্ট করা হয়নি।</div>'}
+$("#secs").onclick=e=>{const t=e.target.closest(".tool");if(t)toolSheet(t.dataset.t,t.dataset.e)};
+$("#chips").onclick=e=>{const c=e.target.closest(".chip");if(c){cat=c.dataset.c;chips();home()}};
+$("#q").oninput=home;
+$("#bg").onclick=e=>{if(e.target.id=="bg")close()};
+$("#addAdmin").onclick=adminSheet;
+$("#admins").onclick=e=>{const b=e.target.closest(".x");if(b){S.admins.splice(+b.dataset.d,1);save();render()}};
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll(".nav button,.view").forEach(x=>x.classList.remove("on"));b.classList.add("on");$("#v-"+b.dataset.v).classList.add("on");scrollTo(0,0)};
+chips();render();
+</script>
+<script>
+// ---- Backend সংযোগ: Key এখন ব্রাউজারে নয়, সার্ভারের .env এ থাকে ----
+async function api(path,opt={}){let t="";try{t=localStorage.getItem("aqua_token")||""}catch(e){}
+if(!t){t=prompt("App Token দিন")||"";try{localStorage.setItem("aqua_token",t)}catch(e){}}
+const r=await fetch(path,{...opt,headers:{"content-type":"application/json","x-app-token":t}});
+if(r.status==401){try{localStorage.removeItem("aqua_token")}catch(e){}throw new Error("App Token ভুল")}
+const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("Error "+r.status));return j}
+async function sync(){try{const t=await api("/api/tools");S.conn={};
+t.forEach(x=>{if(x.configured){const f=D.flatMap(d=>d[2]).find(i=>i[0]==x.name);S.conn[x.name]={e:f?f[1]:"🔗",mask:"Backend .env"}}});
+S.admins=await api("/api/admins");render()}catch(e){toast(e.message)}}
+function toolSheet(n,e){const c=S.conn[n];
+open(`<div class="ic" style="margin:0 0 10px">${e}</div><h3>${esc(n)}</h3><p>${c?"Backend-এ Key সেট আছে ✔":"সার্ভারের .env ফাইলে এই টুলের Key দিন, তারপর টেস্ট করুন"}</p>
+<div class="row"><button class="btn ghost" id="cl">বন্ধ</button><button class="btn" id="ts">টেস্ট কানেকশন</button></div>`);
+$("#cl").onclick=close;
+$("#ts").onclick=async()=>{$("#ts").textContent="টেস্ট হচ্ছে…";try{const r=await api("/api/test/"+encodeURIComponent(n),{method:"POST"});
+toast(r.ok?(n+" ✔ কানেক্টেড"):(n+" ব্যর্থ ("+r.status+")"));if(r.ok)sync()}catch(x){toast(x.message)}$("#ts").textContent="টেস্ট কানেকশন"}}
+function adminSheet(){open(`<h3>অ্যাডমিন প্যানেল যুক্ত করুন</h3><p>Key সার্ভারে এনক্রিপ্ট হয়ে থাকবে</p>
+<input class="in" id="an" placeholder="নাম"><input class="in" id="au" placeholder="https://api.example.com/admin"><input class="in" id="ak" type="password" placeholder="Admin API Key">
+<div class="row"><button class="btn ghost" id="cl">বাতিল</button><button class="btn" id="as">যুক্ত করুন</button></div>`);
+$("#cl").onclick=close;
+$("#as").onclick=async()=>{try{await api("/api/admins",{method:"POST",body:JSON.stringify({n:$("#an").value.trim(),u:$("#au").value.trim(),k:$("#ak").value.trim()})});close();sync();toast("প্যানেল যুক্ত হয়েছে")}catch(x){toast(x.message)}}}
+$("#addAdmin").onclick=adminSheet;
+$("#admins").onclick=async e=>{const b=e.target.closest(".x");if(!b)return;try{await api("/api/admins/"+S.admins[+b.dataset.d].id,{method:"DELETE"});sync()}catch(x){toast(x.message)}};
+sync();
+</script>
+</body>
+</html>
